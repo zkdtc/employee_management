@@ -34,20 +34,24 @@ INSERT INTO departments (name) values ('Physics');
 INSERT INTO departments (name) values ('CS');
 INSERT INTO departments (name) values ('HR');
 
-INSERT INTO roles (title,salary,department_id) values ('Director',250000,1);
-INSERT INTO roles (title,salary,department_id) values ('Professor',200000,1);
-INSERT INTO roles (title,salary,department_id) values ('Associate Professor',150000,1);
-INSERT INTO roles (title,salary,department_id) values ('Assistent Professor',100000,1);
+INSERT INTO roles (title,salary,department_id) values ('Physics Director',250000,1);
+INSERT INTO roles (title,salary,department_id) values ('Physics Professor',200000,1);
+INSERT INTO roles (title,salary,department_id) values ('Physics Associate Professor',150000,1);
+INSERT INTO roles (title,salary,department_id) values ('Physics Assistent Professor',100000,1);
 
-INSERT INTO roles (title,salary,department_id) values ('Director',500000,2);
-INSERT INTO roles (title,salary,department_id) values ('Professor',400000,2);
-INSERT INTO roles (title,salary,department_id) values ('Associate Professor',300000,2);
-INSERT INTO roles (title,salary,department_id) values ('Assistent Professor',150000,2);
+INSERT INTO roles (title,salary,department_id) values ('CS Director',500000,2);
+INSERT INTO roles (title,salary,department_id) values ('CS Professor',400000,2);
+INSERT INTO roles (title,salary,department_id) values ('CS Associate Professor',300000,2);
+INSERT INTO roles (title,salary,department_id) values ('CS Assistent Professor',150000,2);
 
-INSERT INTO roles (title,salary,department_id) values ('Director',200000,3);
-INSERT INTO roles (title,salary,department_id) values ('Senior Staff',180000,3);
-INSERT INTO roles (title,salary,department_id) values ('Staff',120000,3);
-INSERT INTO roles (title,salary,department_id) values ('Assistent Staff',80000,3);
+INSERT INTO roles (title,salary,department_id) values ('HR Director',200000,3);
+INSERT INTO roles (title,salary,department_id) values ('HR Senior Staff',180000,3);
+INSERT INTO roles (title,salary,department_id) values ('HR Staff',120000,3);
+INSERT INTO roles (title,salary,department_id) values ('HR Assistent Staff',80000,3);
 
 
+INSERT INTO employees (first_name,last_name,role_id) values ('Kai','Zhang',1);
+INSERT INTO employees (first_name,last_name,role_id) values ('Zongju','Zhou',9);
+INSERT INTO employees (first_name,last_name,role_id) values ('Ethan','Zhang',5);
+INSERT INTO employees (first_name,last_name,role_id,manager_id) values ('Abigail','Zhang',2,1);
 
