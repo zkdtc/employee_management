@@ -4,6 +4,7 @@ var fs = require('fs');
 
 const path = require("path");
 var mysql = require("mysql");
+const { Console } = require("console");
 
 var connection = mysql.createConnection({
     host: "127.0.0.1",
@@ -206,7 +207,7 @@ function addRoles() {
     // First show all the departments
     // First show all the departments
     connection.query("select * from departments", function (err0, res0) {
-        console.table(res0);
+
         connection.query("select * from roles", function (err, res) {
             console.table(res);
             inquirer.prompt([
@@ -250,7 +251,6 @@ function addEmployees() {
     // First show all the departments
     // First show all the departments
     connection.query("select * from roles", function (err0, res0) {
-        console.table(res0);
         var roles_arr = [];
         for (i = 0; i < res0.length; i++) {
             res0[i].name = res0[i].title + ' ' + res0[i].department_id;
@@ -342,26 +342,198 @@ function updateEmployeeRoles() {
                 ]).then(function (answer) {
                     for (i = 0; i < res1.length; i++) {
                         if (res1[i].name === answer.new_role) {
-                            new_id=res1[i].id;
+                            new_id = res1[i].id;
                         };
                     }
-                    connection.query("UPDATE employees set role_id=? where id=?",[new_id,to_update_id], function (err, res2) {
+                    connection.query("UPDATE employees set role_id=? where id=?", [new_id, to_update_id], function (err, res2) {
                         if (err) throw err;
                         start();
                     })
                 })
             })
         })
-    })};
+    })
+};
 
 
 
 
-    function updateEmployeeManagers() { };
+function updateEmployeeManagers() {
+    connection.query("select * from employees", function (err, res0) {
+        for (i = 0; i < res0.length; i++) {
+            res0[i].name = res0[i].first_name + ' ' + res0[i].last_name;
+        }
+        inquirer.prompt([
+            {
+                name: "to_update",
+                type: "rawlist",
+                message: "Select the Employee you want to update role:",
+                choices: res0 //.append({id:999})
+            }
 
-    function deleteDepartments(){};
+        ]).then(function (answer) {
+            var selected = [];
+            for (i = 0; i < res0.length; i++) {
+                if (res0[i].name === answer.to_update) {
+                    to_update_id = res0[i].id;
+                }
+            }
+            inquirer.prompt([
+                {
+                    name: "new_manager",
+                    type: "rawlist",
+                    message: "Select his/her new Manager:",
+                    choices: res0
+                }
 
-    function deleteRoles(){};
+            ]).then(function (answer2) {
+                for (i = 0; i < res0.length; i++) {
+                    if (res0[i].name === answer2.new_manager) {
+                        new_id = res0[i].id;
+                    };
+                }
+                connection.query("UPDATE employees set manager_id=? where id=?", [new_id, to_update_id], function (err, res2) {
+                    if (err) throw err;
+                    viewEmployees();
+                    start();
+                })
+            })
+        })
+    })
+};
 
-    function deleteEmployees(){};
-    function viewTotalBudget(){};
+function deleteDepartments() {
+    connection.query("select * from departments", function (err, res) {
+        if (err) throw err;
+        inquirer.prompt([
+            {
+                name: "to_delete",
+                type: "rawlist",
+                message: "Select the Department you want to delete:",
+                choices: res //.append({id:999})
+            }
+
+        ]).then(function (answer) {
+            for (i = 0; i < res.length; i++) {
+                if (res[i].name === answer.to_delete) {
+                    to_delete_id = res[i].id;
+                }
+            }
+            connection.query("delete from departments where id=?", [to_delete_id], function (err, res1) {
+                if (err) throw err;
+                viewDepartments();
+
+            });
+        })
+    })
+
+};
+
+function deleteRoles() {
+    connection.query("select * from roles", function (err, res) {
+        for (i = 0; i < res.length; i++) {
+            res[i].name = res[i].title;
+        }
+        if (err) throw err;
+        inquirer.prompt([
+            {
+                name: "to_delete",
+                type: "rawlist",
+                message: "Select the role you want to delete:",
+                choices: res //.append({id:999})
+            }
+
+        ]).then(function (answer) {
+            for (i = 0; i < res.length; i++) {
+                if (res[i].name === answer.to_delete) {
+                    to_delete_id = res[i].id;
+                }
+            }
+            connection.query("delete from roles where id=?", [to_delete_id], function (err, res1) {
+                if (err) throw err;
+                viewRoles();
+
+            });
+        })
+    })
+
+};
+
+function deleteEmployees() {
+    connection.query("select * from employees", function (err, res) {
+        for (i = 0; i < res.length; i++) {
+            res[i].name = res[i].first_name + ' ' + res[i].last_name;
+        }
+        if (err) throw err;
+        inquirer.prompt([
+            {
+                name: "to_delete",
+                type: "rawlist",
+                message: "Select the employee you want to delete:",
+                choices: res //.append({id:999})
+            }
+
+        ]).then(function (answer) {
+            for (i = 0; i < res.length; i++) {
+                if (res[i].name === answer.to_delete) {
+                    to_delete_id = res[i].id;
+                }
+            }
+            connection.query("delete from employees where id=?", [to_delete_id], function (err, res1) {
+                if (err) throw err;
+                viewEmployees();
+
+            });
+        })
+    })
+
+};
+
+function viewTotalBudget() {
+    connection.query("select * from departments", function (err, res) {
+        if (err) throw err;
+        inquirer.prompt([
+            {
+                name: "to_check",
+                type: "rawlist",
+                message: "Select the Department you want to calculate total budget:",
+                choices: res //.append({id:999})
+            }
+
+        ]).then(function (answer) {
+            for (i = 0; i < res.length; i++) {
+                if (res[i].name === answer.to_check) {
+
+                    to_check_id = res[i].id;
+                }
+            }
+            console.log('to_check_id', to_check_id)
+            connection.query("select * from roles where department_id=?", [to_check_id], function (err, res1) {
+                if (err) throw err;
+                var role_id_arr = [];
+                var salary_arr=[];
+                for (i = 0; i < res1.length; i++) {
+                    role_id_arr.push(res1[i].id);
+                    salary_arr.push(res1[i].salary);
+                }
+
+                connection.query("select * from employees", function (err, res2) {
+                    var total_budget = 0;
+                    for (i = 0; i < res2.length; i++) {
+                        if (role_id_arr.includes(res2[i].role_id)) {
+                            //console.table(res2[i]);
+                            var index=role_id_arr.indexOf(res2[i].role_id)
+                            total_budget += salary_arr[index];
+                        }
+                    }
+
+                    console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
+                    console.log('The total annual budget of department ' + answer.to_delete + ' is:' + String(total_budget))
+                    console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
+                    start();
+
+                });
+            })
+        })
+    })
+};
